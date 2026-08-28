@@ -146,6 +146,15 @@ async def _threat_intel_refresh_loop():
         await refresh_threat_intel()
 
 
+async def _auto_learn_loop():
+    """Continuous learning from live internet threat sources (startup + every 30 min)."""
+    try:
+        from services.auto_learner import auto_learn_loop
+    except ImportError:
+        from backend.services.auto_learner import auto_learn_loop
+    await auto_learn_loop(interval_minutes=30)
+
+
 async def _mitre_startup_ingest():
     """One-time MITRE ATT&CK STIX download + RAG ingest (cached to disk)."""
     try:
@@ -164,6 +173,7 @@ async def _mitre_startup_ingest():
 async def _start_background_tasks():
     asyncio.create_task(_threat_intel_refresh_loop())
     asyncio.create_task(_mitre_startup_ingest())
+    asyncio.create_task(_auto_learn_loop())
 
 
 if __name__ == "__main__":

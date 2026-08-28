@@ -90,3 +90,24 @@ async def tools_health_check():
         results["wazuh"] = {"status": "offline", "error": str(e)[:100], "label": "🟢 Live — real health check"}
 
     return {"tools": results, "timestamp": datetime.utcnow().isoformat()}
+
+
+@router.get("/api/learning/status")
+async def learning_status():
+    """Auto-Learner status — what the platform has learned from live internet sources."""
+    try:
+        from services.auto_learner import get_learning_status
+    except ImportError:
+        from backend.services.auto_learner import get_learning_status
+    return get_learning_status()
+
+
+@router.post("/api/learning/run")
+async def learning_run_now():
+    """Trigger an immediate learning cycle from all live internet sources."""
+    try:
+        from services.auto_learner import run_learning_cycle_async
+    except ImportError:
+        from backend.services.auto_learner import run_learning_cycle_async
+    result = await run_learning_cycle_async()
+    return result
