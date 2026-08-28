@@ -1,0 +1,11 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100323" level="7">
+    <if_sid>5716</if_sid>
+    <description>Detects web vulnerability scans targeting internal systems.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="event_id">100002</field>
+      <field name="raw">*web_scan attack launched against*</field>
+  </rule>
+</group>

@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100179" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SSH brute force attempts targeting specific IP addresses using the TCP protocol.</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+      <field name="event_id">1</field>
+      <field name="destination_ip">[&apos;192.168.56.40&apos;]</field>
+      <field name="protocol">TCP</field>
+      <field name="message">*Failed password*</field>
+  </rule>
+</group>

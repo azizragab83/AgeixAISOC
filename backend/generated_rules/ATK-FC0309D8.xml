@@ -1,0 +1,12 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100085" level="7">
+    <if_sid>5716</if_sid>
+    <description>Detects suspicious port scan activity originating from an external host targeting a specific internal IP address.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="event_type">port_scan</field>
+      <field name="src_ip">!192.168.56.0/24</field>
+      <field name="dst_ip">192.168.56.30</field>
+  </rule>
+</group>

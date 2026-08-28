@@ -1,0 +1,168 @@
+[Normal] Awarded by
+[Normal] Project Title (18 Bold)
+[Normal] A thesis submitted by (16)
+[Normal] Full name (16 Bold)
+[Normal] **
+[Normal] **
+[Normal] **
+[Normal] A dissertation submitted in partial fulfillment of the requirements for the degree of Digilians 9 Months Diploma in Applied AI and Data Analytics (12 Bold)
+[Normal] Under supervision of (16 Bold)
+[Normal] Supervisor rank and name (14 Bold)
+[Normal] Supervisor affiliation (14 Italic)
+[Heading 1 Title] General supervisor
+[Heading 1 Title] Dr. Rabab M.Nabawy
+[Heading 1 Title] Academic Director
+[Heading 1 Title] Dr. Ahmed Tobal
+[No Spacing] August 2026
+[Normal] Awarded by
+[Normal] Approval Sheet
+[Normal] Thesis Title
+[Normal] A thesis submitted by
+[Normal] **********
+[Normal] A dissertation submitted in partial fulfillment of the requirements for the degree of
+[Normal] Digilians 9 Months Diploma
+[Normal] Cybersecurity Track
+[Normal] Approved by the examination committee
+[TABLE START]
+Name | Signature
+Prof. | 
+Prof. | 
+Prof. | 
+ | 
+[TABLE END]
+[Heading 1 Title] Abstract
+[No Spacing] In the main body of the abstract, use the same spacing you use throughout the rest of your document (either double spacing or 1.5 line spacing).
+[No Spacing] Keep the section break below to allow Chapter 1 to start page 1.
+[Title] Acknowledgments (16 Bold)
+[No Spacing] This page is optional. If you are not including acknowledgements, delete this page. If you are acknowledging only one person, change the title to Acknowledgment.
+[No Spacing] All body text will be written in times new roman 12 1.5 line spacing
+[Title] Table of Contents
+[No Spacing] In order to generate a “Table of Contents” easily, you will need to use heading style in the above
+[No Spacing] If you use landscape pages, make sure the landscape page numbers match what is listed in your List of Tables.
+[Heading 1 Title] List of Figures
+[TABLE START]
+Fig. No. | Title | Page No.
+[TABLE END]
+[table of figures] 3.1                  Space System                                                                                     Error! Bookmark not defined.
+[table of figures] 3.2                  Control Ground Segment Configuration                                           Error! Bookmark not defined.
+[table of figures] 3.3                  Satellite Simulator                                                                             Error! Bookmark not defined.
+[table of figures] 3.4                 Spacecraft configuration                                                                     Error! Bookmark not defined.
+[table of figures] 4.1                 PCA Projection                                                                                   Error! Bookmark not defined.
+[table of figures] 4.2                 PCA derivation                                                                                   Error! Bookmark not defined.
+[table of figures] 4.3                Quality of fit and prediction                                                                Error! Bookmark not defined.
+[table of figures] 5.1                Propulsion System Types                                                                    Error! Bookmark not defined.
+[table of figures] 5.2                Propulsion System Layout                                                                   Error! Bookmark not defined.
+[table of figures] 5.3                Unprocessed data                                                                                 Error! Bookmark not defined.
+[table of figures] 6-23  Analysis of Sliding window N10 for incorporated state vector-error              Error! Bookmark not defined.
+[No Spacing] In order to generate a List of Figures easily, you will need to assign a caption to all of the figures in your document. After this has happened, click on the References Ribbon, select Insert Table of Figures, under general select Table from drop down box, select OK. Be sure to indent subsequent lines of captions.
+[No Spacing] If you use landscape pages, make sure the landscape page numbers match what is listed in your List of Tables.
+[Heading 1 Title] List of Tables
+[TABLE START]
+Table No. | Title | Page No.
+[TABLE END]
+[table of figures] ‎5.1                Effective parameters                                                                       Error! Bookmark not defined.
+[table of figures] ‎6.1                VNN Summary                                                                               Error! Bookmark not defined.
+[table of figures] ‎6.2                LSTM Summary                                                                             Error! Bookmark not defined.
+[table of figures] ‎6.3                CNN Summary                                                                               Error! Bookmark not defined.
+[table of figures] ‎6.4                Time computation comparison                                                       Error! Bookmark not defined.
+[No Spacing] In order to generate a List of Tables easily, you will need to assign a caption to all of the tables in your document. After this has happened, click on the References Ribbon, select Insert Table or Figures, under general select Table from drop down box, select OK. Be sure to indent subsequent lines of captions.
+[No Spacing] If you use landscape pages, make sure the landscape page numbers match what is listed in your List of Tables.
+[Heading 1 Title] Nomenclature
+[Normal] Abbreviations
+[Normal] ANN 		Artificial Neural Networks
+[Normal] ACS		Attitude Control System
+[Normal] BN		Bayesian network
+[Normal] CS		Communication Session
+[Normal] CNN              Convolutional Neural Network
+[Normal] EMA		Electro-Magnetic Actuator
+[Normal] EMD		Empirical Mode Composition
+[Normal] ESA		European Space Agency
+[No Spacing] This is optional section. If you do not have a Glossary, List of Abbreviations, List of Symbols, or Nomenclature section, delete this page.
+[No Spacing] If you are using this page, choose one of the headings above. Entries should be spaced consistently (single line spacing, 1.5 line spacing when applied consistently).
+[Normal] Symbols
+[Normal] Abbreviations
+[Heading 1] Chapter (1)
+[Heading 1] Introduction (16 Bold)
+[Heading 2] The Basics
+[No Spacing] This template is best used with MS Office 2013 or Later. It is suggested to turn on the Show/Hide tool (¶) that can be found on the Home ribbon so you can track you spacing and section breaks.
+[No Spacing] Review the Template Guide before you begin. Use it for troubleshooting. If you can’t find a solution there, try Microsoft’s extensive help pages.
+[Heading 2] Margins
+[No Spacing] Margin requirements are 2.5 cm left and top whereas right and bottom margins are 1.5 cm. margins are required on Title and Statement of Approval pages. 2.5 cm left margin is recommended for a hard copy.
+[Heading 2] Heading Styles
+[No Spacing] There are many heading styles that have been added to the Styles Ribbon. There are Chapter Headings 1 and 2 in the style ribbon. You will have to use heading 1 for sections and heading 2 for subsections. You will want to use these styles so you can generate a table of contents without any issues. If you open the navigation toolbar [Ctrl + F] and under the search document bar you choose “Headings” you will be able to easily track which headings will go in your table of contents.
+[No Spacing] If after you apply a Style to a heading and you receive Error! Bookmark not defined in your Table of Contents after updating the page number, go back to your heading that is causing the issue and make sure there is still a style applied to it. You can update the entire table to resolve the issue – if you had previously formatted the Table of Contents, you may have to re-format.
+[Heading 3] Inserting a Table of Contents
+[No Spacing] In order to insert an automatic table of contents, you will have needed to apply styles to your headings (as shown above). Once your headings have been assigned a style, you can then insert a table of contents that will automatically populate with the correct heading level indentations, leader dots, and page numbers. This will also create an embedded link from your table of contents to the section in your project in both a MS Word doc and in a PDF file.
+[No Spacing] To insert the table, follow these instructions:
+[No Spacing] In Ribbon above, click References
+[No Spacing] Click ‘Table of Contents’ on the left hand side of the ribbon
+[No Spacing] Choose ‘Custom Table of Contents’ below the built-in tables
+[No Spacing] After a Table of Contents box pops up, click “OK”, without making any changes within the box.
+[No Spacing] Typically, inserting a table of contents, list of figures, and list of figures should be the last step in the formatting practice. If you’ve made changes to content that moves a heading to a different page number, all you’ll need to do is go back to your inserted table of contents, right click, select ‘Update Field’, and select “Update page numbers only”. This will make changes to your page numbers and won’t affect the headings.
+[No Spacing] To create a table of contents you will need to assign a heading style to each heading in your entire document then follow the steps below:
+[No Spacing] Locate your Table of Contents page above
+[No Spacing] In the Ribbon above, click References
+[No Spacing] In the Table of Contents section, click Table of Contents
+[No Spacing] Look past the built-in Table of Contents and select Insert Table of Contents
+[No Spacing] Under the General section in the Show Levels box, select the number of headings you want to show in the Table of contents – 3 levels are common, but it can incorporate all levels, if you wish.
+[Heading 2] Notes
+[No Spacing] If you are planning to include List of Figures and List of Tables, we recommend you using the following method to insert your captions:
+[No Spacing] In Ribbon above, click References
+[No Spacing] In Captions section, click on Insert Caption
+[No Spacing] Next to Label, chose Table or Figure
+[No Spacing] Click OK
+[No Spacing] Type your caption next to the table/figure number.
+[Heading 2] Page Numbers
+[No Spacing] Page numbers will go in the lower middle of each portrait page, chapter (1) will begin with page (1) whereas the previous pages are numbered with Latin numbers. If you are using any landscape orientation pages, the page number will go in the lower middle with vertical text. Page number font and font size needs to be the same as the main body text.
+[Heading 2] Issues with Pagination
+[No Spacing] Occasionally, page numbers will overlap due to section breaks. To fix this issue, simply click on the page number and locate the Design ribbon at the top of the page. Click the drop down arrow on page number > Format page numbers > under the Page numbering section choose Continue from previous section.
+[Caption] Fig. (1.1) The main building (12 Bold)
+[Heading 1] Chapter (2)
+[Heading 2] Landscape Page
+[No Spacing] You may use landscaped pages for large tables or figures that normally will not fit within left and right margins. Note that page numbers will need to be added manually with a text box (that is in place in the bottom middle). A normal page number will show up in the lower middle when adding pagination. You will need to unlink this page and the next page’s pagination to previous in order to keep the pagination in the correct place. Use the page number text box in the lower middle of this page for additional landscape pages.
+[No Spacing] To achieve adding a landscape page, you will need to add a Next Page section break on the previous page. You will also need to add a Next Page section break to the end of this page to convert back to a portriat orientation. It is beneficial to open the Show/Hide control on the Home Ribbon in the Paragraph section so you can see where all extra spacing is and where section and page breaks are.
+[Heading 1] References
+[Heading 2] References Tips
+[No Spacing] Include reference entries here using the (IEEE) format. References will be put in square bracket as it appears in the body text.
+[List Paragraph] Yang, Lei, Pengqi Yu, and Hang Tang. "Real-Time Failure Diagnosis Technology for Satellites Based on Multi-Signal Model." In Computational Intelligence and Design (ISCID), 2014 Seventh International Symposium on, vol. 1, pp. 360-364. IEEE, 2014.
+[Heading 1] Publications
+[Heading 2] Optional Section
+[No Spacing] This is where you can place a list of publication or alternately, you can include a PDF of a published article. This article may either be in color or black and white.
+[No Spacing] All pages of publications need page numbers sequential to the number in the rest of your project. You may need to block out original page numbers to prevent confusion. If you have only one publication, list the title as PUBLICATION.
+[Heading 1] Appendix (A)
+[No Spacing] If you have large tables or figures to include, we ask that you use landscape pages and place the Appendix Title above the figure/table.
+[Caption] Table (‎0.1) (12 Bold)
+[TABLE START]
+ |  |  | 
+ |  |  | 
+ |  |  | 
+ |  |  | 
+[TABLE END]
+[Normal] ملخص المشروع
+[Normal] الجهة المانحة
+[Normal] صفحة الموافقة
+[Normal] عنوان الرسالة
+[Normal] رسالة مقدمه من
+[Normal] رسالة مقدمة استكمالًا لمتطلبات الحصول على
+[Normal] دبلومة Digilians 9 Months 
+مسار الأمن السيبراني
+[Normal] يعتمد من لجنة الممتحنين
+[TABLE START]
+التوقيع | الإسم
+ | أ.د /
+ | أ.د /
+ | 
+ | 
+[TABLE END]
+[Normal] الجهة المانحة
+[Normal] اسم المشروع باللغة العربية
+[Normal] رسالة مقدمة من
+[Normal] اسم الدارس
+[isselectedend] رسالة مقدمة استكمالًا لمتطلبات الحصول على دبلومة Digilians لمدة تسعة أشهر في الذكاء الاصطناعي التطبيقي وتحليل البيانات
+[Normal] تحت إشراف
+[Normal] الرتبة والدرجة العلمية/ اسم المشرف الأول
+[Normal] المشرف العام للمشاريع
+[Normal] د. رباب نبوي
+[Normal] المدير الأكاديمي
+[Normal] أ.د أحمد طوبال
+[Normal] أغسطس 2026

@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Use the backend requirements file, which pins the exact versions the
+# code was written against (crewai==0.1.30 + langchain-ollama ==0.0.2 for
+# direct local-Ollama agent calls). The root requirements.txt installs a
+# newer crewai>=1.0.0 whose OpenAI-only API breaks the agent layer.
+COPY backend/requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/ backend/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,14 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100288" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects web vulnerability scan activity based on specific source and destination IP addresses, protocol, and raw log message.</description>
+    <mitre>
+      <id>T1134</id>
+      <id>T1190</id>
+    </mitre>
+      <field name="source_ip">192.168.56.10</field>
+      <field name="destination_ip">192.168.56.40</field>
+      <field name="protocol">TCP</field>
+      <field name="raw|contains">web_scan attack launched</field>
+  </rule>
+</group>

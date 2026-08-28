@@ -1,0 +1,14 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100111" level="7">
+    <if_sid>5716</if_sid>
+    <description>Detects suspicious activity related to &apos;Valid Accounts&apos; (T1078) technique, which involves using existing accounts and credentials.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="event_id">4624</field>
+      <field name="EventData.EventID">4624</field>
+      <field name="EventData.AccountName">*</field>
+      <field name="EventData.Status">0x00000000</field>
+      <field name="EventData.LogonType">[3, 10]</field>
+  </rule>
+</group>

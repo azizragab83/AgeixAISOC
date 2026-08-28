@@ -1,0 +1,10 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100099" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SMB enumeration activity based on specific source and destination IP addresses.</description>
+      <field name="source_ip">192.168.56.10</field>
+      <field name="destination_ip">192.168.56.30</field>
+      <field name="protocol">TCP</field>
+      <field name="event_id">4740</field>
+  </rule>
+</group>

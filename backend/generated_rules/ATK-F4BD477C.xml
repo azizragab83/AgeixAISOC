@@ -1,0 +1,8 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100235" level="10">
+    <if_sid>5716</if_sid>
+    <description>This rule detects AI-learned web vulnerability scans based on the presence of specific keywords in the alert message and network traffic characteristics.</description>
+      <field name="raw|contains">web_scan attack launched against</field>
+      <field name="protocol">TCP</field>
+  </rule>
+</group>

@@ -1,0 +1,12 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100362" level="7">
+    <if_sid>5716</if_sid>
+    <description>Detects suspicious activity indicative of an attempt to exploit valid accounts on the network.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="event_id">[4625, 4634]</field>
+      <field name="TargetUserName">*</field>
+      <field name="Status">0x00000000</field>
+  </rule>
+</group>

@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100003" level="10">
+    <if_sid>5716</if_sid>
+    <description>This rule detects potential lateral movement attempts within a network using SSH. It monitors for SSH connections between two distinct IP addresses, which could indicate unauthorized access or malicious activity.</description>
+    <mitre>
+      <id>T1021</id>
+    </mitre>
+      <field name="_event_type">syslog</field>
+      <field name="message">*sshd: Accepted password for* from * to * port 22</field>
+      <field name="source_ip">*</field>
+      <field name="destination_ip">*</field>
+  </rule>
+</group>

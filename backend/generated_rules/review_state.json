@@ -1,0 +1,27 @@
+{
+  "sigma-wz-verify-01": {
+    "reviewed": true,
+    "action": "approved",
+    "reviewed_at": "2026-08-02T07:18:25.364016"
+  },
+  "sigma-web-002": {
+    "reviewed": true,
+    "action": "removed",
+    "reviewed_at": "2026-08-02T07:18:25.421765"
+  },
+  "sigma-web-001": {
+    "reviewed": true,
+    "action": "removed",
+    "reviewed_at": "2026-08-02T07:20:23.499570"
+  },
+  "ATK-9281E374": {
+    "reviewed": true,
+    "action": "approved",
+    "reviewed_at": "2026-08-02T08:31:15.433030"
+  },
+  "ATK-AB9EAEE1": {
+    "reviewed": true,
+    "action": "approved",
+    "reviewed_at": "2026-08-25T13:05:20.733206"
+  }
+}

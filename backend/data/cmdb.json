@@ -1,0 +1,11 @@
+{
+  "_label": "STATIC CONFIG — Not Live Discovery. Mock CMDB for demonstration purposes.",
+  "assets": {
+    "192.168.56.2":   {"hostname": "fortigate",    "role": "Firewall",                "criticality": "critical", "department": "Network Security", "os": "FortiOS"},
+    "192.168.56.10":  {"hostname": "kali",          "role": "Attack Machine",         "criticality": "medium",   "department": "Red Team",        "os": "Kali Linux"},
+    "192.168.56.20":  {"hostname": "win10",         "role": "Endpoint Workstation",   "criticality": "high",     "department": "Operations",      "os": "Windows 10"},
+    "192.168.56.30":  {"hostname": "wazuh",         "role": "SIEM Manager",           "criticality": "critical", "department": "Security",        "os": "Ubuntu Server"},
+    "192.168.56.40":  {"hostname": "metasploitable","role": "Vulnerable Target",      "criticality": "low",      "department": "Lab",             "os": "Metasploitable"},
+    "192.168.56.100": {"hostname": "win_server",    "role": "Domain Controller",      "criticality": "critical", "department": "IT Infrastructure","os": "Windows Server 2022"}
+  }
+}

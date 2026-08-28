@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100072" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects suspicious port scan activity initiated by an external host targeting internal IP addresses using TCP protocol.</description>
+    <mitre>
+      <id>T1470</id>
+    </mitre>
+      <field name="event.type">network</field>
+      <field name="destination.ip">192.168.56.30</field>
+      <field name="source.ip">!192.168.56.0/24</field>
+      <field name="protocol">TCP</field>
+  </rule>
+</group>

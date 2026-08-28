@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100429" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects suspicious port scan activity targeting internal IP addresses using common reconnaissance ports (20-23, 25, 80, 443, 3389). This rule is designed to identify potential reconnaissance or preparatory steps for further malicious activities.</description>
+    <mitre>
+      <id>T1442.001</id>
+    </mitre>
+      <field name="event_type">port_scan</field>
+      <field name="destination_ip">[&apos;192.168.56.40&apos;]</field>
+      <field name="protocol">[&apos;TCP&apos;]</field>
+      <field name="source_port|re">(20-23|25|80|443|3389)</field>
+  </rule>
+</group>

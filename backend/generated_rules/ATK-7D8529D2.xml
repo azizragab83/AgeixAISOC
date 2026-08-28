@@ -1,0 +1,10 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100407" level="7">
+    <if_sid>5716</if_sid>
+    <description>This rule detects web vulnerability scans based on specific keywords and patterns in the raw log data.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="raw|contains">web_scan attack launched against</field>
+  </rule>
+</group>

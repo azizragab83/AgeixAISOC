@@ -1,0 +1,11 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100480" level="10">
+    <if_sid>5716</if_sid>
+    <description>This rule detects an AI-learned web vulnerability scan targeting a specific IP address from another IP address using the TCP protocol.</description>
+      <field name="event_type">network_activity</field>
+      <field name="source_ip">192.168.56.10</field>
+      <field name="destination_ip">192.168.56.40</field>
+      <field name="protocol">TCP</field>
+      <field name="raw">web_scan attack launched</field>
+  </rule>
+</group>

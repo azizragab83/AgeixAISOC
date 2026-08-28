@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100253" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects suspicious port scan activity initiated by an external host targeting internal IP addresses on a Windows system.</description>
+    <mitre>
+      <id>T1473</id>
+    </mitre>
+      <field name="event_id">4624</field>
+      <field name="TargetUserName">SYSTEM</field>
+      <field name="IpAddress">[&apos;192.168.56.10&apos;, &apos;192.168.56.20&apos;]</field>
+      <field name="LogonType">3</field>
+  </rule>
+</group>

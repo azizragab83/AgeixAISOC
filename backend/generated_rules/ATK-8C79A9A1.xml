@@ -1,0 +1,11 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100288" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects an SSH brute force attack by identifying multiple failed login attempts from a single source IP address targeting the same destination IP address within a short time frame.</description>
+    <mitre>
+      <id>T1408.001</id>
+    </mitre>
+      <field name="event_id">21</field>
+      <field name="message">*Failed password*</field>
+  </rule>
+</group>

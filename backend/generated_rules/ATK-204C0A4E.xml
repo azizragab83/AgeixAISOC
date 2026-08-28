@@ -1,0 +1,12 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100113" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SMB enumeration activity based on specific indicators of compromise (IoCs). This rule targets network traffic that matches the known patterns of an SMB enumeration attack.</description>
+    <mitre>
+      <id>T1059.002</id>
+    </mitre>
+      <field name="event_id">[4624, 4634]</field>
+      <field name="TargetUserName">ANONYMOUS LOGON</field>
+      <field name="ServiceName">SMB Server</field>
+  </rule>
+</group>

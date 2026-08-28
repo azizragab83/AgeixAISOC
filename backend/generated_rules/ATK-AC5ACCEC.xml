@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100385" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SMB enumeration attacks by identifying outbound TCP connections to a target IP address.</description>
+    <mitre>
+      <id>T1048</id>
+    </mitre>
+      <field name="event_id">138</field>
+      <field name="src_ip">192.168.56.10</field>
+      <field name="dst_ip">192.168.56.30</field>
+      <field name="protocol">TCP</field>
+  </rule>
+</group>

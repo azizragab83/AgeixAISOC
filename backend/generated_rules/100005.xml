@@ -1,0 +1,13 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100481" level="7">
+    <if_sid>5716</if_sid>
+    <description>Detects SMB enumeration activities based on specific keywords and patterns.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="event_id">[4624]</field>
+      <field name="EventData.TargetUserName|contains">[&apos;admin&apos;, &apos;administrator&apos;]</field>
+      <field name="EventData.EventCode|eq">4624</field>
+      <field name="EventData.Status|eq">0x0</field>
+  </rule>
+</group>

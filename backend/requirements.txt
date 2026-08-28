@@ -1,0 +1,30 @@
+# AgeixAISOC backend dependencies
+# Pinned to the exact versions installed in the working local venv
+# (121 pytest tests pass with this set).
+
+fastapi==0.139.2
+uvicorn[standard]==0.51.0
+pydantic==2.12.5
+python-dotenv==1.2.2
+httpx==0.28.1
+
+# LangGraph orchestration
+langgraph==1.2.9
+
+# CrewAI agents + local Ollama LLMs
+crewai==1.15.4
+langchain-ollama==1.1.0
+
+# Lab bridge / SOAR integrations
+paramiko==5.0.0
+websockets==15.0.1
+
+# RAG engine (ChromaDB + Ollama embeddings)
+chromadb>=1.0.0
+
+# OSINT enrichment (OSINT Arsenal agent)
+duckduckgo-search>=6.0.0
+beautifulsoup4>=4.12.3
+
+# FastAPI multipart support
+python-multipart>=0.0.6

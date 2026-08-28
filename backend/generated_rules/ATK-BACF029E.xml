@@ -1,0 +1,8 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100440" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects web vulnerability scans targeting internal IP addresses using an AI-learned detection system.</description>
+      <field name="event_id">100002</field>
+      <field name="raw">web_scan attack launched against</field>
+  </rule>
+</group>

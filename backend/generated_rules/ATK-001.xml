@@ -1,0 +1,12 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100282" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SSH brute force attempts originating from known bad actor IP addresses.</description>
+    <mitre>
+      <id>T1413.001</id>
+    </mitre>
+      <field name="event_id">2001</field>
+      <field name="message">*Failed password* for *root* from *192.168.56.10* port 22 ssh2</field>
+      <field name="source_ip">[&apos;192.168.56.10&apos;]</field>
+  </rule>
+</group>

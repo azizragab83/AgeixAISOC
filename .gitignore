@@ -1,0 +1,57 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment files (sensitive credentials)
+.env
+.env.*
+*.env
+!.env.example
+
+# Node
+node_modules/
+dist/
+.vite/
+.next/
+out/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+build_err.log
+build_out.log
+
+# Compiled caches
+unsloth_compiled_cache/
+ageix_finetuned_model/
+
+# Test artifacts
+test_alert*.json
+test_payload.json
+ageix_soar*.json
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp

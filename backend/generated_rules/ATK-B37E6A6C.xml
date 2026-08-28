@@ -1,0 +1,11 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100363" level="7">
+    <if_sid>5716</if_sid>
+    <description>Detects SMB enumeration activities targeting Windows systems.</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="event_id">[4624, 4634]</field>
+      <field name="EventData.TargetUserName|endswith">[&apos;$&apos;]</field>
+  </rule>
+</group>

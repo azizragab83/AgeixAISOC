@@ -1,0 +1,10 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100166" level="7">
+    <if_sid>5716</if_sid>
+    <description>Auto-generated rule for detected gap</description>
+    <mitre>
+      <id>T1078</id>
+    </mitre>
+      <field name="EventID">4688</field>
+  </rule>
+</group>

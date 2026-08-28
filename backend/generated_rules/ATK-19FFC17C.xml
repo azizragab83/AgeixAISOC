@@ -1,0 +1,10 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100258" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SSH brute force attempts based on specific patterns in the raw log message.</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+      <field name="raw">*ssh_brute_force attack launched against*</field>
+  </rule>
+</group>

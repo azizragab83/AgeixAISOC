@@ -1,0 +1,11 @@
+<group name="local,custom_ai_generated,">
+  <rule id="100279" level="10">
+    <if_sid>5716</if_sid>
+    <description>Detects SSH brute force attempts targeting a specific IP address.</description>
+    <mitre>
+      <id>T1412</id>
+    </mitre>
+      <field name="event_id">100001</field>
+      <field name="raw">ssh_brute_force attack launched against</field>
+  </rule>
+</group>
