@@ -4,8 +4,6 @@ import json
 import logging
 from datetime import datetime
 
-from crewai.llm import LLM
-
 try:
     from agents import get_agent
 except ImportError:
@@ -18,18 +16,14 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-HUNTER_LLM = LLM(
-    model="llama3.1",
-    base_url="http://localhost:11434",
-    provider="ollama",
-    temperature=0.1,
-    max_tokens=2048,
-)
+HUNTER_LLM = None
 
 
 def run(alert_id: str, raw_alert: dict, decision_package: dict) -> dict:
     agent = get_agent("threat_hunter")
-    agent.llm = HUNTER_LLM
+    if HUNTER_LLM is not None:
+
+        agent.llm = HUNTER_LLM
     context = {
         "alert_summary": raw_alert.get("rule_description", raw_alert.get("title", "")),
         "severity": raw_alert.get("severity", "unknown"),
