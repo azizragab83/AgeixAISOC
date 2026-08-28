@@ -30,8 +30,27 @@ COLLECTION_NAME = "ageixai_knowledge"
 
 
 def _get_embedding(text: str) -> List[float]:
-    """Get embedding vector from Ollama (nomic-embed-text), fallback to zero vector."""
+    """Get embedding vector from Ollama (nomic-embed-text) or Groq API, fallback to zero vector."""
     import httpx
+    import os
+
+    # Try Groq embeddings first if API key is available
+    groq_key = os.getenv("GROQ_API_KEY", "")
+    if groq_key:
+        try:
+            resp = httpx.post(
+                "https://api.groq.com/openai/v1/embeddings",
+                json={"model": "text-embedding-ada-002", "input": text},
+                headers={"Authorization": f"Bearer {groq_key}"},
+                timeout=15,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                if data.get("data") and data["data"]:
+                    return data["data"][0]["embedding"]
+        except Exception as e:
+            logger.warning(f"Groq embedding failed: {e}")
+
     payload = {"model": "nomic-embed-text", "prompt": text}
     base = _ollama_base_url().rstrip("/")
     # /api/embed is the modern route; /api/embeddings is the legacy one

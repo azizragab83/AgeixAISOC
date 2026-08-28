@@ -1,0 +1,62 @@
+services:
+  # ── Backend API ──
+  - type: web
+    name: ageixaisoc-backend
+    runtime: docker
+    repo: https://github.com/azizragab83/AgeixAISOC.git
+    plan: free
+    dockerfilePath: Dockerfile.render
+    healthCheckPath: /api/health
+    envVars:
+      - key: OLLAMA_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: OLLAMA_MODEL_THREAT
+        value: llama-3.3-70b-versatile
+      - key: OLLAMA_MODEL_CODER
+        value: llama-3.3-70b-versatile
+      - key: OLLAMA_MODEL_GENERAL
+        value: llama-3.3-70b-versatile
+      - key: GROQ_API_KEY
+        sync: false
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: API_PORT
+        value: 8000
+      - key: N8N_WEBHOOK_URL
+        value: http://localhost:5678/webhook/execute-soar
+      - key: KALI_IP
+        value: 192.168.56.10
+      - key: KALI_USER
+        value: aziz
+      - key: KALI_PASS
+        value: 8394
+      - key: WAZUH_IP
+        value: 192.168.56.30
+      - key: WAZUH_USER
+        value: wazuh
+      - key: WAZUH_PASS
+        value: wazuh
+      - key: FORTIGATE_IP
+        value: 192.168.56.2
+      - key: FORTIGATE_API_KEY
+        value: H5HO7hxk567gjQnn6qh4xc7j8k7htj
+      - key: WIN10_IP
+        value: 192.168.56.20
+      - key: AD_IP
+        value: 192.168.56.100
+      - key: METASPLOITABLE_IP
+        value: 192.168.56.40
+
+  # ── Frontend ──
+  - type: web
+    name: ageixaisoc-frontend
+    runtime: docker
+    repo: https://github.com/azizragab83/AgeixAISOC.git
+    plan: free
+    dockerfilePath: Dockerfile.frontend
+    healthCheckPath: /
+    envVars:
+      - key: BACKEND_URL
+        value: https://ageixaisoc-backend.onrender.com
+      - key: VITE_API_URL
+        value: https://ageixaisoc-backend.onrender.com

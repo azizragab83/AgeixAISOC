@@ -8,6 +8,7 @@ class Settings:
     OLLAMA_MODEL_THREAT: str = os.getenv("OLLAMA_MODEL_THREAT", "qwen2.5:14b")
     OLLAMA_MODEL_CODER: str = os.getenv("OLLAMA_MODEL_CODER", "qwen2.5-coder:7b")
     OLLAMA_MODEL_GENERAL: str = os.getenv("OLLAMA_MODEL_GENERAL", "llama3.1")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     
     KALI_IP: str = os.getenv("KALI_IP", "192.168.56.10")
     KALI_USER: str = os.getenv("KALI_USER", "aziz")

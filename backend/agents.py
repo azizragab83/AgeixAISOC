@@ -1,8 +1,10 @@
 """
 AgeixAISOC - CrewAI Agents Definition
 Connects to local Ollama models for fully offline AI-powered SOC operations.
+Supports Groq API as a cloud fallback for SaaS deployment.
 """
 
+import os
 from crewai import Agent
 from crewai.llm import LLM
 
@@ -17,32 +19,33 @@ except ImportError:
     from backend.ai_tools.cognitive_arsenal import get_cognitive_tools
 
 # ──────────────────────────────────────────────
-# LLM Backends (Local Ollama)
+# LLM Backends (Local Ollama or Groq API for cloud)
 # ──────────────────────────────────────────────
 
-threat_llm = LLM(
-    model=settings.OLLAMA_MODEL_THREAT,
-    base_url=settings.OLLAMA_BASE_URL,
-    provider="ollama",
-    temperature=0.1,
-    max_tokens=4096,
-)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+USE_GROQ = bool(GROQ_API_KEY)
 
-coder_llm = LLM(
-    model=settings.OLLAMA_MODEL_CODER,
-    base_url=settings.OLLAMA_BASE_URL,
-    provider="ollama",
-    temperature=0.2,
-    max_tokens=4096,
-)
+def _create_llm(model: str, temperature: float) -> LLM:
+    """Create an LLM instance using Groq API if available, otherwise local Ollama."""
+    if USE_GROQ:
+        return LLM(
+            model=model,
+            api_key=GROQ_API_KEY,
+            provider="groq",
+            temperature=temperature,
+            max_tokens=4096,
+        )
+    return LLM(
+        model=model,
+        base_url=settings.OLLAMA_BASE_URL,
+        provider="ollama",
+        temperature=temperature,
+        max_tokens=4096,
+    )
 
-general_llm = LLM(
-    model=settings.OLLAMA_MODEL_GENERAL,
-    base_url=settings.OLLAMA_BASE_URL,
-    provider="ollama",
-    temperature=0.3,
-    max_tokens=4096,
-)
+threat_llm = _create_llm(settings.OLLAMA_MODEL_THREAT, 0.1)
+coder_llm = _create_llm(settings.OLLAMA_MODEL_CODER, 0.2)
+general_llm = _create_llm(settings.OLLAMA_MODEL_GENERAL, 0.3)
 
 # ──────────────────────────────────────────────
 # Agent Definitions

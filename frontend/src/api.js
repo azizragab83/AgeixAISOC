@@ -1,6 +1,9 @@
 import axios from 'axios';
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 export const api = axios.create({
+  baseURL: API_BASE,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' }
 });
@@ -31,7 +34,8 @@ export class SOCWebSocket {
     
     try {
       const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      this.ws = new WebSocket(`${proto}//${window.location.host}/ws/dashboard`);
+      const wsHost = API_BASE ? API_BASE.replace(/^https?:\/\//, '') : window.location.host;
+      this.ws = new WebSocket(`${proto}//${wsHost}/ws/dashboard`);
       this.ws.onopen = () => {
         console.log('[WS] Connected to dashboard');
         this.reconnectAttempts = 0;
