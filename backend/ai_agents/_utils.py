@@ -5,11 +5,6 @@ import re
 import logging
 from functools import partial
 
-try:
-    from crewai import Task
-except ImportError:
-    from crewai import Task
-
 logger = logging.getLogger(__name__)
 
 
@@ -17,7 +12,14 @@ def execute_agent_task(agent, task_description: str, expected_output: str = "JSO
     import concurrent.futures
     pool = concurrent.futures.ThreadPoolExecutor(max_workers=1)
     try:
-        fn = partial(agent.execute_task, Task(description=task_description, expected_output=expected_output))
+        # SimpleAgent.execute_task takes a string directly
+        # CrewAI agents take a Task object - handle both
+        try:
+            from crewai import Task
+            task = Task(description=task_description, expected_output=expected_output)
+        except ImportError:
+            task = task_description
+        fn = partial(agent.execute_task, task)
         fut = pool.submit(fn)
         result = fut.result(timeout=timeout)
         if not result or (isinstance(result, str) and not result.strip()):

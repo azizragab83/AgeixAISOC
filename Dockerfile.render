@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Use the backend requirements file
-COPY backend/requirements.txt requirements.txt
+# Use lightweight requirements for cloud (no crewai/chromadb - too heavy for free tier)
+COPY requirements-render.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ backend/
