@@ -8,3 +8,4 @@ from .ti import router as ti_router
 from .toolkit import router as toolkit_router
 from .data_sources import router as data_sources_router
 from .chat import router as chat_router
+from .ioc import router as ioc_router

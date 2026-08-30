@@ -158,6 +158,19 @@ export const chatApi = {
   send: (message, history = []) => api.post('/api/chat', { message, history }),
 };
 
+// ── IOC Management ──────────────────────────────────────────────────────────
+export const iocApi = {
+  list: (filters = {}) => api.get('/api/ioc', { params: filters }),
+  stats: () => api.get('/api/ioc/stats'),
+  get: (iocId) => api.get(`/api/ioc/${iocId}`),
+  enforceEdr: (iocId) => api.post(`/api/ioc/${iocId}/enforce-edr`),
+  whitelist: (iocId, justification, analyst = 'analyst') =>
+    api.post(`/api/ioc/${iocId}/whitelist`, { justification, analyst }),
+  forceExpire: (iocId) => api.post(`/api/ioc/${iocId}/expire`),
+  expireSweep: () => api.post('/api/ioc/expire-sweep'),
+  ingestFromSigmaBlock: (payload) => api.post('/api/ioc/from-sigma-block', payload),
+};
+
 export const dataApi = {
   getKnowledgeSources: () => api.get('/api/knowledge-sources'),
   getCMDB: () => api.get('/api/cmdb/assets'),

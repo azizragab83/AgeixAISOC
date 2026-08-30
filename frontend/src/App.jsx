@@ -14,14 +14,24 @@ import ToolkitView from './components/ToolkitView';
 import AIEngineeringView from './pages/AIEngineeringView';
 import DevOpsResourcesView from './pages/DevOpsResourcesView';
 import MasterBrainChat from './components/MasterBrainChat';
+import IOCManagementView from './pages/IOCManagementView';
 import { SOCWebSocket } from './api';
+import { handleWsIocEvent } from './utils/iocEvents';
 
 function AppContent() {
   const [ws, setWs] = useState(null);
 
   useEffect(() => {
     const socket = new SOCWebSocket(
-      () => {},
+      (message) => {
+        // Route IOC lifecycle events (ioc_progress / ioc_enforced / ioc_update)
+        // into the IOC pub/sub bus for the IOC page + HITL checklist.
+        if (message?.event_type) {
+          handleWsIocEvent(message.event_type, message.data || message);
+        } else if (message?.type?.startsWith?.('ioc_')) {
+          handleWsIocEvent(message.type, message.data || message);
+        }
+      },
       () => {},
       () => {}
     );
@@ -42,6 +52,7 @@ function AppContent() {
         <Route path="/audit" element={<AuditView />} />
         <Route path="/detection" element={<DetectionView />} />
         <Route path="/forensics" element={<ForensicsView />} />
+        <Route path="/ioc" element={<IOCManagementView />} />
       </Routes>
     </Layout>
   );

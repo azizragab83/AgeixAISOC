@@ -32,6 +32,13 @@ try:
 except ImportError:
     from backend.routes.data_sources import register_resolved
 
+try:
+    from ioc_models import ioc_store, IOC, IOCTimelineEvent
+    from edr_connectors import enforce_ioc_everywhere
+except ImportError:
+    from backend.ioc_models import ioc_store, IOC, IOCTimelineEvent
+    from backend.edr_connectors import enforce_ioc_everywhere
+
 logger = logging.getLogger("ageixaisoc.routes.hitl")
 router = APIRouter(tags=["hitl"])
 
@@ -65,7 +72,7 @@ async def human_decision(decision: HumanDecision, background_tasks: BackgroundTa
             if rec.get("action_type") == "block_ip":
                 ip_to_block = rec.get("target") or src_ip
                 if ip_to_block and ip_to_block != "unknown":
-                    background_tasks.add_task(execute_block_ip, ip_to_block)
+                    background_tasks.add_task(execute_block_ip, ip_to_block, decision_pkg)
                     block_actions += 1
         if block_actions:
             app_state.threats_blocked += block_actions
@@ -181,9 +188,12 @@ async def human_decision(decision: HumanDecision, background_tasks: BackgroundTa
     return {"status": "success", "decision_id": decision.decision_id, "action": decision.action, "message": result_message, "timestamp": datetime.utcnow().isoformat()}
 
 
-async def execute_block_ip(src_ip: str):
+async def execute_block_ip(src_ip: str, decision_pkg: Optional[Dict[str, Any]] = None):
+    """Block the IP via n8n SOAR (FortiGate fallback), then record + enforce the IOC."""
+    decision_pkg = decision_pkg or {}
     n8n_url = "http://localhost:5678/webhook/execute-soar"
     payload = {"action": "block_ip", "src_ip": src_ip}
+    blocked_ok = False
 
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -191,20 +201,168 @@ async def execute_block_ip(src_ip: str):
             response.raise_for_status()
             logger.info(f"n8n webhook executed block_ip for {src_ip}: {response.status_code}")
             await ws_manager.broadcast("soar_execution", {"action": "block_ip", "src_ip": src_ip, "status": "executing", "source": "n8n", "timestamp": datetime.utcnow().isoformat()})
-            return
+            blocked_ok = True
     except Exception as e:
         logger.warning(f"n8n webhook failed for block_ip ({src_ip}): {e}. Falling back to direct FortiGate API.")
 
+    if not blocked_ok:
+        try:
+            try:
+                from fortigate_soar import block_ip_real
+            except ImportError:
+                from backend.fortigate_soar import block_ip_real
+            result = await block_ip_real(src_ip)
+            logger.info(f"FortiGate fallback result for {src_ip}: {result}")
+            await ws_manager.broadcast("soar_execution", {"action": "block_ip", "src_ip": src_ip, "status": result.get("status", "failed"), "source": "fortigate_direct", "message": result.get("message", ""), "timestamp": datetime.utcnow().isoformat()})
+            blocked_ok = result.get("status") == "success"
+        except Exception as e2:
+            logger.error(f"FortiGate fallback also failed for {src_ip}: {e2}")
+
+    # ── IOC lifecycle: record the indicator and push it to the endpoint layer ──
+    if blocked_ok:
+        try:
+            await _record_and_enforce_ioc(src_ip, decision_pkg)
+        except Exception as e:
+            logger.error(f"IOC record/enforce failed for {src_ip}: {e}")
+
+
+async def _record_and_enforce_ioc(ip: str, decision_pkg: Dict[str, Any]):
+    """
+    Full IOC pipeline after a confirmed FortiGate block:
+      1. Threat-intel enrichment (OTX cross-check stub — boosts confidence).
+      2. Create/update the IOC record (dedupe by value, blocked_on=["fortigate"]).
+      3. Broadcast ioc_progress so the HITL card animates the checklist.
+      4. Fault-tolerant EDR/AV enforcement fan-out (Wazuh AR, ClamAV, stubs).
+      5. Broadcast ioc_enforced with per-connector results.
+    """
+    decision_id = decision_pkg.get("decision_id", "")
+    alert_id = decision_pkg.get("alert_id", "")
+    mitre = decision_pkg.get("mitre_technique") or decision_pkg.get("mitre_id", "")
+    raw_alert = decision_pkg.get("raw_alert", {}) or {}
+    sigma_rule_id = (decision_pkg.get("sigma_rule_generated") or decision_pkg.get("sigma_rule") or {}).get("rule_id", "") \
+        if isinstance(decision_pkg.get("sigma_rule_generated") or decision_pkg.get("sigma_rule"), dict) else ""
+    risk_score = decision_pkg.get("risk_score", 50)
+    severity = decision_pkg.get("risk_level", "medium").lower()
+    if severity not in ("critical", "high", "medium", "low"):
+        severity = "medium"
+
+    # 1) Threat-intel enrichment stub (OTX / OSINT cross-check)
+    enrichment, boost = await _enrich_from_threat_intel(ip)
+
+    # 2) Create/update the IOC record
+    now = datetime.utcnow().isoformat()
+    ioc = ioc_store.get_by_value(ip)
+    if ioc:
+        ioc.last_seen = now
+        ioc.confidence = min(100, max(ioc.confidence, int(risk_score) + boost))
+        if "fortigate" not in ioc.blocked_on:
+            ioc.blocked_on.append("fortigate")
+        ioc.enrichment = {**ioc.enrichment, **enrichment}
+        ioc_store.add_timeline_event(ioc, "FortiGate block", "success", f"Decision {decision_id}")
+        ioc = ioc_store.update(ioc)
+    else:
+        ioc = IOC(
+            type="ip",
+            value=ip,
+            source_sigma_rule_id=sigma_rule_id,
+            source_alert_id=str(raw_alert.get("id", alert_id)),
+            source_decision_id=decision_id,
+            confidence=min(100, int(risk_score) + boost),
+            severity=severity,
+            status="active",
+            blocked_on=["fortigate"],
+            mitre_technique=str(mitre),
+            approved_by=decision_pkg.get("human_decision_analyst", "analyst"),
+            ttl_hours=72,
+            enrichment=enrichment,
+            timeline=[
+                IOCTimelineEvent(step="Sigma rule fired", status="success", detail=f"Rule {sigma_rule_id or 'n/a'}", timestamp=now),
+                IOCTimelineEvent(step="Wazuh alert ingested", status="success", detail=f"Alert {alert_id}", timestamp=now),
+                IOCTimelineEvent(step="Core Brain recommendation", status="success", detail="block_ip recommended", timestamp=now),
+                IOCTimelineEvent(step="Human approval", status="success", detail=f"Decision {decision_id}", timestamp=now),
+                IOCTimelineEvent(step="FortiGate block", status="success", detail="Blocked at perimeter", timestamp=now),
+                IOCTimelineEvent(step="EDR/AV push", status="pending", detail="Enforcement starting", timestamp=now),
+            ],
+        )
+        ioc = ioc_store.upsert(ioc)
+
+    # 3) Progress broadcast — HITL card shows "Blocking on FortiGate... ✅"
+    await ws_manager.broadcast("ioc_progress", {
+        "decision_id": decision_id, "ioc_id": ioc.id, "value": ioc.value,
+        "step": "fortigate", "status": "success",
+        "message": "Blocking on FortiGate... ✅",
+        "timestamp": now,
+    })
+
+    # 4) EDR/AV enforcement fan-out (fault-tolerant)
+    await ws_manager.broadcast("ioc_progress", {
+        "decision_id": decision_id, "ioc_id": ioc.id, "value": ioc.value,
+        "step": "edr", "status": "running",
+        "message": "Pushing to EDR...",
+        "timestamp": datetime.utcnow().isoformat(),
+    })
+    results = await enforce_ioc_everywhere(ioc, broadcast_fn=None)
+
+    # 5) Final progress + ioc_enforced broadcast
+    edr_ok = any(r.get("status") in ("success", "mocked") for r in results.values())
+    await ws_manager.broadcast("ioc_progress", {
+        "decision_id": decision_id, "ioc_id": ioc.id, "value": ioc.value,
+        "step": "edr", "status": "success" if edr_ok else "failed",
+        "message": "Pushing to EDR... ✅" if edr_ok else "Pushing to EDR... ⚠️ (connectors unavailable)",
+        "results": results,
+        "timestamp": datetime.utcnow().isoformat(),
+    })
+    await ws_manager.broadcast("ioc_progress", {
+        "decision_id": decision_id, "ioc_id": ioc.id, "value": ioc.value,
+        "step": "recorded", "status": "success",
+        "message": "IOC recorded ✅",
+        "timestamp": datetime.utcnow().isoformat(),
+    })
+    await ws_manager.broadcast("ioc_enforced", {
+        "ioc_id": ioc.id, "value": ioc.value, "type": ioc.type,
+        "blocked_on": ioc.blocked_on, "results": results,
+        "decision_id": decision_id,
+        "timestamp": datetime.utcnow().isoformat(),
+    })
+
+
+async def _enrich_from_threat_intel(ip: str) -> tuple:
+    """
+    Cross-check the IP against the existing OSINT/threat-intel layer before
+    enforcing. If already flagged externally, boost confidence and tag the
+    MITRE technique. Returns (enrichment_dict, confidence_boost).
+    """
+    enrichment: Dict[str, Any] = {}
+    boost = 0
     try:
         try:
-            from fortigate_soar import block_ip_real
+            from services.threat_intel import is_known_malicious
         except ImportError:
-            from backend.fortigate_soar import block_ip_real
-        result = await block_ip_real(src_ip)
-        logger.info(f"FortiGate fallback result for {src_ip}: {result}")
-        await ws_manager.broadcast("soar_execution", {"action": "block_ip", "src_ip": src_ip, "status": result.get("status", "failed"), "source": "fortigate_direct", "message": result.get("message", ""), "timestamp": datetime.utcnow().isoformat()})
-    except Exception as e2:
-        logger.error(f"FortiGate fallback also failed for {src_ip}: {e2}")
+            from backend.services.threat_intel import is_known_malicious
+        known = is_known_malicious(ip)
+        if known:
+            enrichment["threat_intel"] = known if isinstance(known, dict) else {"flagged": True}
+            boost = 15
+    except Exception:
+        pass
+
+    # Fallback: check the in-memory Feodo Tracker feed loaded by threat_intel
+    if not enrichment:
+        try:
+            try:
+                from services import threat_intel as ti_mod
+            except ImportError:
+                from backend.services import threat_intel as ti_mod
+            known_ips = getattr(ti_mod, "known_malicious_ips", None) or getattr(ti_mod, "malicious_ips", None)
+            if known_ips and ip in known_ips:
+                enrichment["threat_intel"] = {"source": "feodo_tracker", "flagged": True}
+                boost = 15
+        except Exception:
+            pass
+
+    if boost:
+        logger.info(f"IOC {ip} enriched from threat intel (+{boost} confidence)")
+    return enrichment, boost
 
 
 async def forward_to_n8n(decision_pkg: dict):

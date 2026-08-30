@@ -2,6 +2,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Radio, TrendingUp, Search, Globe2, Wrench,
   ShieldCheck, BrainCircuit, Terminal, ScrollText, ChevronsLeft, ChevronsRight, Sparkles,
+  Shield,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -22,6 +23,7 @@ const NAV_SECTIONS = [
     key: 'nav_threat_intel',
     items: [
       { path: '/threat-intel', labelKey: 'nav_threat_intel', icon: Globe2 },
+      { path: '/ioc', labelKey: 'IOC Management', icon: Shield },
       { path: '/toolkit', labelKey: 'nav_toolkit', icon: Wrench },
     ],
   },

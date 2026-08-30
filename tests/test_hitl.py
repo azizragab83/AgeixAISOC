@@ -62,12 +62,16 @@ class TestExecuteBlockIp:
                 mock_client.return_value.__aenter__.return_value = mock_instance
 
                 with patch.object(ws_manager, "broadcast", AsyncMock()):
-                    await execute_block_ip("10.0.0.5")
+                    # Isolate the IOC enforcement pipeline (tested separately below)
+                    with patch("backend.routes.hitl._record_and_enforce_ioc", AsyncMock()) as mock_ioc:
+                        await execute_block_ip("10.0.0.5")
 
                 mock_instance.post.assert_called_once()
                 call_kwargs = mock_instance.post.call_args[1]
                 assert call_kwargs["json"]["action"] == "block_ip"
                 assert call_kwargs["json"]["src_ip"] == "10.0.0.5"
+                # IOC pipeline runs after a successful block (empty pkg when none provided)
+                mock_ioc.assert_called_once_with("10.0.0.5", {})
         asyncio.run(run())
 
     def test_n8n_fails_fortigate_fallback_success(self):
@@ -81,9 +85,10 @@ class TestExecuteBlockIp:
                 mock_client.return_value.__aenter__.return_value = mock_instance
 
                 with patch.object(ws_manager, "broadcast", AsyncMock()):
-                    with patch("backend.fortigate_soar.block_ip_real", AsyncMock(return_value={"status": "success", "message": "IP blocked on FortiGate"})) as mock_fallback:
-                        await execute_block_ip("10.0.0.5")
-                        mock_fallback.assert_called_once_with("10.0.0.5")
+                    with patch("backend.routes.hitl._record_and_enforce_ioc", AsyncMock()):
+                        with patch("backend.fortigate_soar.block_ip_real", AsyncMock(return_value={"status": "success", "message": "IP blocked on FortiGate"})) as mock_fallback:
+                            await execute_block_ip("10.0.0.5")
+                            mock_fallback.assert_called_once_with("10.0.0.5")
         asyncio.run(run())
 
     def test_both_n8n_and_fortigate_fail(self):
@@ -101,6 +106,77 @@ class TestExecuteBlockIp:
                         await execute_block_ip("10.0.0.5")
                         mock_fallback.assert_called_once_with("10.0.0.5")
         asyncio.run(run())
+
+
+# ── IOC pipeline tests (Sigma block -> IOC record -> EDR enforcement) ──
+
+class TestIocPipeline:
+
+    def test_ioc_recorded_and_enforced_on_successful_block(self):
+        async def run():
+            from backend.state import ws_manager
+            from backend.routes import hitl
+            from backend.ioc_models import IOCStore
+            import tempfile, os
+
+            tmp = tempfile.mktemp(suffix=".json")
+            test_store = IOCStore(path=tmp)
+            try:
+                with patch.object(hitl, "ioc_store", test_store):
+                    with patch.object(ws_manager, "broadcast", AsyncMock()) as mock_broadcast:
+                        with patch.object(hitl, "enforce_ioc_everywhere", AsyncMock(return_value={
+                            "wazuh-active-response": {"status": "success", "message": "ok"},
+                        })):
+                            await hitl._record_and_enforce_ioc("10.0.0.77", {
+                                "decision_id": "DEC-ioc-001",
+                                "alert_id": "ALERT-ioc-001",
+                                "mitre_technique": "T1110",
+                                "risk_score": 88,
+                                "risk_level": "high",
+                                "raw_alert": {"source_ip": "10.0.0.77"},
+                            })
+
+                # IOC persisted with fortigate blocked + timeline seeded
+                ioc = test_store.get_by_value("10.0.0.77")
+                assert ioc is not None
+                assert "fortigate" in ioc.blocked_on
+                assert ioc.mitre_technique == "T1110"
+                assert len(ioc.timeline) >= 6
+
+                # Progress + enforced events broadcast
+                event_types = [c.args[0] for c in mock_broadcast.call_args_list]
+                assert "ioc_progress" in event_types
+                assert "ioc_enforced" in event_types
+            finally:
+                if os.path.exists(tmp):
+                    os.remove(tmp)
+        asyncio.run(run())
+
+    def test_ioc_dedupe_by_value(self):
+        async def run():
+            from backend.routes import hitl
+            from backend.ioc_models import IOCStore
+            import tempfile, os
+
+            tmp = tempfile.mktemp(suffix=".json")
+            test_store = IOCStore(path=tmp)
+            try:
+                with patch.object(hitl, "ioc_store", test_store):
+                    with patch.object(ws_manager_mod(), "broadcast", AsyncMock()):
+                        with patch.object(hitl, "enforce_ioc_everywhere", AsyncMock(return_value={})):
+                            await hitl._record_and_enforce_ioc("10.0.0.88", {"decision_id": "D1", "risk_score": 60})
+                            await hitl._record_and_enforce_ioc("10.0.0.88", {"decision_id": "D2", "risk_score": 70})
+
+                assert len(test_store.list()) == 1  # deduped by value
+            finally:
+                if os.path.exists(tmp):
+                    os.remove(tmp)
+        asyncio.run(run())
+
+
+def ws_manager_mod():
+    from backend.state import ws_manager
+    return ws_manager
 
 
 # ── forward_to_n8n tests ────────────────────

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { showToast } from '../utils/toast';
+import IOCEnforcementChecklist from './IOCEnforcementChecklist';
 
 const MAX_EVALUATION_ATTEMPTS = 5;
 
@@ -218,6 +219,13 @@ export default function PendingHITLCard({ alert, onDecision, disabled }) {
               {predictedMove}
             </p>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── IOC enforcement pipeline (live sub-status after approval) ── */}
+      <AnimatePresence>
+        {phase === 'executed' && (
+          <IOCEnforcementChecklist decisionId={decisionId} />
         )}
       </AnimatePresence>
 

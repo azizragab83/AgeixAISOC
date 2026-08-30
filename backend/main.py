@@ -20,9 +20,9 @@ except ImportError:
     from backend.orchestrator import soc_runner
 
 try:
-    from routes import health_router, lab_router, hitl_router, dashboard_router, ws_router, rag_router, ti_router, toolkit_router, data_sources_router, chat_router
+    from routes import health_router, lab_router, hitl_router, dashboard_router, ws_router, rag_router, ti_router, toolkit_router, data_sources_router, chat_router, ioc_router
 except ImportError:
-    from backend.routes import health_router, lab_router, hitl_router, dashboard_router, ws_router, rag_router, ti_router, toolkit_router, data_sources_router, chat_router
+    from backend.routes import health_router, lab_router, hitl_router, dashboard_router, ws_router, rag_router, ti_router, toolkit_router, data_sources_router, chat_router, ioc_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -124,6 +124,7 @@ app.include_router(ti_router)
 app.include_router(toolkit_router)
 app.include_router(data_sources_router)
 app.include_router(chat_router)
+app.include_router(ioc_router)
 
 # ── Background Tasks (Threat Intel refresh every 15 min + MITRE on startup) ──
 
@@ -169,11 +170,49 @@ async def _mitre_startup_ingest():
         logger.warning(f"MITRE startup ingest skipped: {e}")
 
 
+async def _ioc_ttl_expiry_loop():
+    """
+    IOC feed/expiry job: every 15 minutes, expire IOCs past their ttl_hours,
+    unblock them from FortiGate/EDR/AV via the connectors, and mark them
+    status=expired. Broadcasts ioc_update for each swept IOC.
+    """
+    try:
+        from ioc_models import ioc_store
+        from edr_connectors import unenforce_ioc_everywhere
+    except ImportError:
+        from backend.ioc_models import ioc_store
+        from backend.edr_connectors import unenforce_ioc_everywhere
+
+    await asyncio.sleep(60)  # let the app finish starting up
+    while True:
+        try:
+            expired = ioc_store.find_expired()
+            for ioc in expired:
+                ioc.status = "expired"
+                ioc_store.add_timeline_event(ioc, "TTL expired", "success", f"ttl_hours={ioc.ttl_hours}")
+                ioc_store.update(ioc)
+                try:
+                    results = await unenforce_ioc_everywhere(ioc)
+                    logger.info(f"[IOC TTL] unblocked {ioc.value}: {results}")
+                except Exception as e:
+                    logger.error(f"[IOC TTL] unblock failed for {ioc.value}: {e}")
+                await ws_manager.broadcast("ioc_update", {
+                    "ioc_id": ioc.id, "value": ioc.value, "status": "expired",
+                    "reason": "ttl_expired", "timestamp": datetime.utcnow().isoformat(),
+                })
+            if expired:
+                logger.info(f"[IOC TTL] swept {len(expired)} expired IOC(s)")
+        except Exception as e:
+            logger.error(f"[IOC TTL] sweep error: {e}")
+        await asyncio.sleep(900)  # 15 minutes
+
+
 @app.on_event("startup")
 async def _start_background_tasks():
     asyncio.create_task(_threat_intel_refresh_loop())
     asyncio.create_task(_mitre_startup_ingest())
     asyncio.create_task(_auto_learn_loop())
+    asyncio.create_task(_ioc_ttl_expiry_loop())
 
 
 if __name__ == "__main__":

@@ -45,4 +45,23 @@ class Settings:
     ARSENAL_TIMEOUT: float = float(os.getenv("ARSENAL_TIMEOUT", "8"))
     ABUSEIPDB_API_KEY: str = os.getenv("ABUSEIPDB_API_KEY", "")
 
+    # ── IOC / EDR enforcement layer ──
+    # Wazuh Active Response (endpoint firewall-drop)
+    WAZUH_AR_COMMAND: str = os.getenv("WAZUH_AR_COMMAND", "firewall-drop")
+    WAZUH_AR_HASH_COMMAND: str = os.getenv("WAZUH_AR_HASH_COMMAND", "")  # custom AR for hash blocking
+    WAZUH_AR_BLOCK_MINUTES: int = int(os.getenv("WAZUH_AR_BLOCK_MINUTES", "0"))  # 0 = permanent
+    # ClamAV hash blocklist
+    CLAMAV_HDB_PATH: str = os.getenv("CLAMAV_HDB_PATH", "/var/lib/clamav/local.hdb")
+    CLAMAV_HSB_PATH: str = os.getenv("CLAMAV_HSB_PATH", "/var/lib/clamav/local.hsb")
+    CLAMAV_HOST: str = os.getenv("CLAMAV_HOST", "localhost")
+    CLAMAV_PORT: int = int(os.getenv("CLAMAV_PORT", "3310"))
+    # CrowdStrike Falcon (stub until licensed)
+    CROWDSTRIKE_CLIENT_ID: str = os.getenv("CROWDSTRIKE_CLIENT_ID", "")
+    CROWDSTRIKE_CLIENT_SECRET: str = os.getenv("CROWDSTRIKE_CLIENT_SECRET", "")
+    CROWDSTRIKE_API_BASE: str = os.getenv("CROWDSTRIKE_API_BASE", "https://api.crowdstrike.com")
+    # Microsoft Defender for Endpoint (stub until app registration)
+    DEFENDER_ATP_TENANT_ID: str = os.getenv("DEFENDER_ATP_TENANT_ID", "")
+    DEFENDER_ATP_CLIENT_ID: str = os.getenv("DEFENDER_ATP_CLIENT_ID", "")
+    DEFENDER_ATP_CLIENT_SECRET: str = os.getenv("DEFENDER_ATP_CLIENT_SECRET", "")
+
 settings = Settings()

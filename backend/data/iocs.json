@@ -1,0 +1,84 @@
+[
+  {
+    "id": "ioc-f225635043c1",
+    "type": "ip",
+    "value": "10.0.0.5",
+    "source_sigma_rule_id": "",
+    "source_alert_id": "",
+    "source_decision_id": "",
+    "first_seen": "2026-08-29T15:04:48.527854",
+    "last_seen": "2026-08-29T15:04:48.527854",
+    "confidence": 50,
+    "severity": "medium",
+    "status": "active",
+    "blocked_on": [
+      "fortigate"
+    ],
+    "mitre_technique": "",
+    "approved_by": "analyst",
+    "ttl_hours": 72,
+    "timeline": [
+      {
+        "step": "Sigma rule fired",
+        "status": "success",
+        "detail": "Rule n/a",
+        "timestamp": "2026-08-29T15:04:48.527854"
+      },
+      {
+        "step": "Wazuh alert ingested",
+        "status": "success",
+        "detail": "Alert ",
+        "timestamp": "2026-08-29T15:04:48.527854"
+      },
+      {
+        "step": "Core Brain recommendation",
+        "status": "success",
+        "detail": "block_ip recommended",
+        "timestamp": "2026-08-29T15:04:48.527854"
+      },
+      {
+        "step": "Human approval",
+        "status": "success",
+        "detail": "Decision ",
+        "timestamp": "2026-08-29T15:04:48.527854"
+      },
+      {
+        "step": "FortiGate block",
+        "status": "success",
+        "detail": "Blocked at perimeter",
+        "timestamp": "2026-08-29T15:04:48.527854"
+      },
+      {
+        "step": "EDR/AV push",
+        "status": "pending",
+        "detail": "Enforcement starting",
+        "timestamp": "2026-08-29T15:04:48.527854"
+      },
+      {
+        "step": "EDR push: wazuh-active-response",
+        "status": "failed",
+        "detail": "Wazuh API <AsyncMock name='AsyncClient().__aenter__().put().status_code' id='1300478416'>: <MagicMock name='AsyncClient().__aenter__().put().text.__getitem__()' id='1300545680'>",
+        "timestamp": "2026-08-29T15:04:48.533854"
+      },
+      {
+        "step": "EDR push: clamav",
+        "status": "failed",
+        "detail": "ClamAV does not block IPs (hash-based AV only)",
+        "timestamp": "2026-08-29T15:04:48.536854"
+      },
+      {
+        "step": "EDR push: crowdstrike-falcon",
+        "status": "skipped",
+        "detail": "not configured",
+        "timestamp": "2026-08-29T15:04:48.537854"
+      },
+      {
+        "step": "EDR push: defender-atp",
+        "status": "skipped",
+        "detail": "not configured",
+        "timestamp": "2026-08-29T15:04:48.538854"
+      }
+    ],
+    "enrichment": {}
+  }
+]
